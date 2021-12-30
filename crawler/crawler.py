@@ -18,9 +18,9 @@ class Crawler:
         req = Request(finvizURL, headers={'User-Agent': 'Mozilla/5.0'})
         html = urlopen(req).read()
         bsObject = BeautifulSoup(html, 'html.parser')
-        print(bsObject)
-        # for meta in bsObject.find_all('meta'):
-        #     print(meta.get('content'))
+        print(bsObject.head)
+        print(bsObject.head.find('meta', {'name':'description'}).get('content'))
+
 
 if __name__ == '__main__':
     collector = Crawler.instance()

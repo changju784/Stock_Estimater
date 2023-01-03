@@ -1,6 +1,7 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from bs4.element import Comment
+import pandas as pd
 
 class Crawler:
     @classmethod
@@ -21,13 +22,23 @@ class Crawler:
         return True
 
     def finvizCrawler(self):
+        # Returns time & news title dataframe crawled from finviz url.
         finvizURL = 'http://finviz.com/news.ashx'
-        bloombergURL = 'http://www.bloomberg.com/markets/economics'
+        # bloombergURL = 'http://www.bloomberg.com/markets/economics'
         req = Request(finvizURL, headers={'User-Agent': 'Mozilla/5.0'})
         html = urlopen(req).read()
-        soup = BeautifulSoup(html, 'html.parser').body
-        # print(bsObject.head.find('meta', {'name':'description'}).get('content'))
-        [s.extract() for s in soup(['style', 'script', '[document]', 'head', 'title'])]
+        soup = BeautifulSoup(html, 'html.parser')
+        tables = []
+        for table in soup.find_all('table'):
+            for tr in table.find_all('tr'):
+                tableData = [td.get_text(strip=True) for td in tr.find_all('td')]
+                if len(tableData) == 3:
+                    tables.append(tableData)
+        df = pd.DataFrame(tables[1:], columns=['', 'Time', 'Title'])
+        df = df.iloc[:, 1:]
+        df = df[df['Time'].map(len) == 7]
+        return df
+
 
 
 

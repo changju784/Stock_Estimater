@@ -1,6 +1,6 @@
+from datetime import datetime
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
-from bs4.element import Comment
 import pandas as pd
 
 class Crawler:
@@ -13,13 +13,6 @@ class Crawler:
         cls.__instance = cls(*args, **kargs)
         cls.instance = cls.__getInstance
         return cls.__instance
-
-    def tag_visible(element):
-        if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
-            return False
-        if isinstance(element, Comment):
-            return False
-        return True
 
     def finvizCrawler(self):
         # Returns time & news title dataframe crawled from finviz url.
@@ -37,12 +30,19 @@ class Crawler:
         df = pd.DataFrame(tables[1:], columns=['', 'Time', 'Title'])
         df = df.iloc[:, 1:]
         df = df[df['Time'].map(len) == 7]
+
+        now = datetime.today().strftime('%Y-%m-%d')
+        df["Time"] = now + " " + df["Time"]
         return df
 
-
-
+    def saveCSV(self, df):
+        filePath = "../docs/finviz_articles.csv"
+        df.to_csv(filePath, sep='\t', encoding='utf-8', index=False)
+        return
 
 if __name__ == '__main__':
     collector = Crawler.instance()
-    collector.finvizCrawler()
+    df = collector.finvizCrawler()
+    collector.saveCSV(df)
+
 

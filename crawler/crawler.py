@@ -15,6 +15,13 @@ class Crawler:
         cls.instance = cls.__getInstance
         return cls.__instance
 
+    def cnbcCrawler(self):
+        cnbcURL = 'https://www.cnbc.com/'
+        req = Request(cnbcURL, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
+        soup = BeautifulSoup(html, 'html.parser')
+
+
     def finvizCrawler(self):
         '''
         Returns time & news title dataframe crawled from finviz url.
@@ -48,16 +55,21 @@ class Crawler:
         sia = SentimentIntensityAnalyzer()
         for index, row in df.iterrows():
             row['Rate'] = sia.polarity_scores(row['Title'])['compound']
+            print("Time: ", row['Time'])
+            print("Title: ", row['Title'])
+            print("Rate: ", row['Rate'])
+            print("========================")
         return df
 
 
     def saveCSV(self, df):
         filePath = "../docs/finviz_articles.csv"
-        df.to_csv(filePath, sep='\t', encoding='utf-8', index=False)
+        df.to_csv(filePath, mode='a', sep='\t', encoding='utf-8', index=False, header=False)
         return
 
 if __name__ == '__main__':
     collector = Crawler.instance()
+    # collector.cnbcCrawler()
     df = collector.finvizCrawler()
     collector.saveCSV(df)
 

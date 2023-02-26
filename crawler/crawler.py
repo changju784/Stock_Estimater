@@ -15,20 +15,20 @@ class Crawler:
         cls.instance = cls.__getInstance
         return cls.__instance
 
-    def cnbcCrawler(self):
+    def cnbc_crawler(self):
         cnbcURL = 'https://www.cnbc.com/'
         req = Request(cnbcURL, headers={'User-Agent': 'Mozilla/5.0'})
         html = urlopen(req).read()
         soup = BeautifulSoup(html, 'html.parser')
 
 
-    def finvizCrawler(self):
-        '''
-        Returns time & news title dataframe crawled from finviz url.
+    def finviz_crawler(self):
+        """
+        Returns time & news title & pre-trained ratings dataframe crawled from finviz url.
         :return: dataframe
-        '''
-        finvizURL = 'http://finviz.com/news.ashx'
-        req = Request(finvizURL, headers={'User-Agent': 'Mozilla/5.0'})
+        """
+        finviz_url = 'http://finviz.com/news.ashx'
+        req = Request(finviz_url, headers={'User-Agent': 'Mozilla/5.0'})
         html = urlopen(req).read()
         soup = BeautifulSoup(html, 'html.parser')
         tables = []
@@ -47,10 +47,14 @@ class Crawler:
         df = df[df['Time'].map(len) == 7]
         now = datetime.today().strftime('%Y-%m-%d')
         df['Time'] = now + ' ' + df['Time']
-        df = self.usePreTrainedModel(df)
+        df = self.add_ratings(df)
         return df
 
-    def usePreTrainedModel(self, df):
+    def add_ratings(self, df):
+        """
+        Pretrain text using sentiment intensity model
+        :return: dataframe
+        """
         df['Rate'] = ''
         sia = SentimentIntensityAnalyzer()
         for index, row in df.iterrows():
@@ -62,15 +66,14 @@ class Crawler:
         return df
 
 
-    def saveCSV(self, df):
+    def save_csv(self, df):
         filePath = "../docs/finviz_articles.csv"
         df.to_csv(filePath, mode='a', sep='\t', encoding='utf-8', index=False, header=False)
         return
 
 if __name__ == '__main__':
     collector = Crawler.instance()
-    # collector.cnbcCrawler()
-    df = collector.finvizCrawler()
-    collector.saveCSV(df)
+    df = collector.finviz_crawler()
+    collector.save_csv(df)
 
 

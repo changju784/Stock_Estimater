@@ -6,4 +6,4 @@ WIP
 Used html parser to crawl news article title from finviz / cnvc.
 
 ## Processing 
-Tokenize and 
+Tokenize sentences into words and conduct data cleansing, numerize token. 

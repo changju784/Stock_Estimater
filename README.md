@@ -1,3 +1,9 @@
 # Stock_Estimater
 
-WIP simple crawling system from finviz / cnvc using html parser BeautifulSoup, and training CNN models 
+WIP 
+
+## Crawling System 
+Used html parser to crawl news article title from finviz / cnvc.
+
+## Processing 
+Tokenize and 

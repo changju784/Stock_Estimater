@@ -3,7 +3,11 @@
 WIP 
 
 ## Crawling System 
-Used html parser to crawl news article title from finviz / cnvc.
+Used html parser BeautifulSoup to crawl news article title from finviz / cnvc.
 
 ## Processing 
-Tokenize sentences into words and conduct data cleansing, numerize token. 
+Tokenize sentences into words using nltk, and conduct data cleansing with by emoving stopwords.
+Numerize the tokens with tensorflow. 
+
+## Modeling 
+CNN 

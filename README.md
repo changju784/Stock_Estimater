@@ -10,4 +10,4 @@ Tokenize sentences into words using nltk, and conduct data cleansing with by emo
 Numerize the tokens with tensorflow. 
 
 ## Modeling 
-CNN 
+CNN model tensorflow keras to split dataset into train/test/validation and save h5 file. 
